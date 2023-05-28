@@ -107,14 +107,12 @@ const machineSlice = createSlice({
           // Creating new machine.
           let machine: Machine = { id: uuid() };
           c.fields.forEach((f) => {
-            console.log("forEach: ", f);
             if (f.type === "checkbox") {
               machine[f.id] = false;
             } else {
               machine[f.id] = "";
             }
           });
-          console.log('NEW MACHINE ARRAY', [...c.machines, machine]);
           // Add the machine item to machines.
           return {
             ...c,
