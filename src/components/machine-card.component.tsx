@@ -8,6 +8,7 @@ import {
   DeleteIcon,
   Switch,
   Modal,
+  Pressable,
 } from "native-base";
 import { Calendar } from "react-native-calendars";
 
@@ -85,13 +86,16 @@ export const MachineCard = ({ machine, fields, categoryId }: Props) => {
               />
             )}
             {f.type === "date" && (
-              <Input
-                type="text"
-                keyboardType="numeric"
-                value={machine[f.id]}
-                editable={false}
-                onPressIn={() => setFieldId(f.id)}
-              />
+              <Pressable
+                px="3"
+                py="3"
+                borderWidth={1}
+                borderColor="muted.300"
+                borderRadius="sm"
+                onPress={() => setFieldId(f.id)}
+              >
+                <Text>{machine[f.id]}</Text>
+              </Pressable>
             )}
           </FormControl>
         ))}
