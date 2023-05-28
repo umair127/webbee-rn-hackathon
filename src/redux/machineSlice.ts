@@ -1,14 +1,16 @@
 import { createSlice } from "@reduxjs/toolkit";
 import uuid from "uuid-random";
 
-import { Machines } from "../interfaces/machine";
+import { Machines, Machine } from "../interfaces/machine";
 
 // {
 //   categories: [
 //     {
+//       id: "123",
 //       name: "category 1",
-//       fields: [{ name: "modal", type: "number" }],
-//       machines: [{ id: "123", modal: "modal 1" }],
+//       fields: [{ id: "123", name: "modal", type: "number" }],
+//       // machines: [{ id: "123", modal: "modal 1" }],
+//       machines: [{ id: "123", abc: "abc" }],
 //     },
 //   ];
 // }
@@ -42,13 +44,14 @@ const machineSlice = createSlice({
     addFieldToCategory: (state, action) => {
       state.categories = state.categories.map((c) => {
         if (c.id === action.payload.category) {
+          const fieldId = uuid();
           // Add the field into field array and all of the machines.
           return {
             ...c,
-            fields: [...c.fields, { id: uuid(), ...action.payload.field }],
+            fields: [...c.fields, { id: fieldId, ...action.payload.field }],
             machines: c.machines.map((m) => ({
               ...m,
-              [action.payload.field.name]: "",
+              [fieldId]: "",
             })),
           };
         } else return c;
@@ -62,7 +65,7 @@ const machineSlice = createSlice({
             ...c,
             fields: c.fields.filter((f) => f.id !== action.payload.field),
             machines: c.machines.map((m) => {
-              delete m[action.payload.filed];
+              delete m[action.payload.field];
               return m;
             }),
           };
@@ -101,13 +104,21 @@ const machineSlice = createSlice({
     addMachineToCategory: (state, action) => {
       state.categories = state.categories.map((c) => {
         if (c.id === action.payload.category) {
+          // Creating new machine.
+          let machine: Machine = { id: uuid() };
+          c.fields.forEach((f) => {
+            console.log("forEach: ", f);
+            if (f.type === "checkbox") {
+              machine[f.id] = false;
+            } else {
+              machine[f.id] = "";
+            }
+          });
+          console.log('NEW MACHINE ARRAY', [...c.machines, machine]);
           // Add the machine item to machines.
           return {
             ...c,
-            machines: [
-              ...c.machines,
-              { id: uuid(), ...action.payload.machine },
-            ],
+            machines: [...c.machines, machine],
           };
         } else return c;
       });
@@ -119,6 +130,21 @@ const machineSlice = createSlice({
           return {
             ...c,
             machines: c.machines.filter((m) => m.id !== action.payload.machine),
+          };
+        } else return c;
+      });
+    },
+    updateMachine: (state, action) => {
+      state.categories = state.categories.map((c) => {
+        if (c.id === action.payload.category) {
+          // Update the machine in machine array.
+          return {
+            ...c,
+            machines: c.machines.map((m) => {
+              if (m.id === action.payload.machine.id) {
+                return action.payload.machine;
+              } else return m;
+            }),
           };
         } else return c;
       });
@@ -136,6 +162,7 @@ export const {
   setFieldAsTitle,
   addMachineToCategory,
   removeMachineFromCategory,
+  updateMachine,
 } = machineSlice.actions;
 
 export default machineSlice.reducer;

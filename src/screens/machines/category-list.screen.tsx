@@ -1,6 +1,7 @@
 import { VStack, Box, Button, Text, FlatList } from "native-base";
+import uuid from "uuid-random";
 
-import { CategoryCard } from "../../components/category-card";
+import { CategoryCard } from "../../components/category-card.component";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import { addCategory } from "../../redux/machineSlice";
 
@@ -8,20 +9,18 @@ export const MachineCategoryListScreen = () => {
   const dispatch = useAppDispatch();
   const { categories } = useAppSelector((state) => state.machine);
 
-  console.log(categories);
-
   const onPress = () => {
     dispatch(
       addCategory({
         name: "",
-        fields: [{ name: "", type: "text" }],
+        fields: [{ id: uuid(), name: "", type: "text" }],
         machines: [],
       })
     );
   };
 
   return (
-    <VStack flex={1} p="2" space="4" safeArea>
+    <VStack flex={1} p="2" space="4" safeAreaBottom>
       <Box flex={1}>
         {categories.length === 0 ? (
           <Box flex={1} justifyContent="center" alignItems="center">
@@ -35,7 +34,9 @@ export const MachineCategoryListScreen = () => {
         )}
       </Box>
 
-      <Button mb="2" onPress={onPress}>Add Category</Button>
+      <Button mb="2" onPress={onPress}>
+        Add Category
+      </Button>
     </VStack>
   );
 };
