@@ -55,10 +55,12 @@ export const RootDrawerNavigator = () => (
     <Drawer.Screen
       name="MachineCategoryList"
       component={MachineCategoryListScreen}
+      options={{title: "Manage Categories"}}
     />
     <Drawer.Screen
       name="MachineCategoryItemList"
       component={MachineCategoryItemListScreen}
+      options={{title: "Details"}}
     />
   </Drawer.Navigator>
 );

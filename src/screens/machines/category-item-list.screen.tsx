@@ -1,5 +1,13 @@
 import { Alert } from "react-native";
-import { VStack, HStack, Text, Button, Box, FlatList } from "native-base";
+import {
+  VStack,
+  HStack,
+  Text,
+  Button,
+  Box,
+  FlatList,
+  useMediaQuery,
+} from "native-base";
 
 import { MachineCard } from "../../components/machine-card.component";
 import { useAppDispatch, useAppSelector } from "../../hooks";
@@ -10,6 +18,11 @@ export const MachineCategoryItemListScreen = ({ route }: any) => {
 
   const dispatch = useAppDispatch();
   const { categories } = useAppSelector((state) => state.machine);
+
+  const [isSmallScreen] = useMediaQuery({
+    minWidth: 280,
+    maxWidth: 768,
+  });
 
   const getCategory = () => {
     const cat = categories.find((c) => c.id === category);
@@ -41,13 +54,17 @@ export const MachineCategoryItemListScreen = ({ route }: any) => {
       <Box flex={1}>
         {!!categoryDetails && categoryDetails?.machines?.length > 0 ? (
           <FlatList
+            key={isSmallScreen ? "one-col" : "two-col"}
+            numColumns={isSmallScreen ? 1 : 2}
             data={categoryDetails.machines}
             renderItem={({ item }) => (
-              <MachineCard
-                machine={item}
-                fields={categoryDetails.fields}
-                categoryId={category}
-              />
+              <Box flex={{ base: 1, md: 0.5 }}>
+                <MachineCard
+                  machine={item}
+                  fields={categoryDetails.fields}
+                  categoryId={category}
+                />
+              </Box>
             )}
           />
         ) : (

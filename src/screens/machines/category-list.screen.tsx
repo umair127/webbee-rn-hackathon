@@ -1,4 +1,12 @@
-import { VStack, Box, Button, Text, FlatList } from "native-base";
+import {
+  VStack,
+  Box,
+  Button,
+  Text,
+  Flex,
+  FlatList,
+  useMediaQuery,
+} from "native-base";
 import uuid from "uuid-random";
 
 import { CategoryCard } from "../../components/category-card.component";
@@ -8,6 +16,11 @@ import { addCategory } from "../../redux/machineSlice";
 export const MachineCategoryListScreen = () => {
   const dispatch = useAppDispatch();
   const { categories } = useAppSelector((state) => state.machine);
+
+  const [isSmallScreen] = useMediaQuery({
+    minWidth: 280,
+    maxWidth: 768,
+  });
 
   const onPress = () => {
     dispatch(
@@ -28,8 +41,14 @@ export const MachineCategoryListScreen = () => {
           </Box>
         ) : (
           <FlatList
+            key={isSmallScreen ? "one-col" : "two-col"}
+            numColumns={isSmallScreen ? 1 : 2}
             data={categories}
-            renderItem={({ item }) => <CategoryCard category={item} />}
+            renderItem={({ item }) => (
+              <Box flex={{ base: 1, md: 0.5 }}>
+                <CategoryCard category={item} />
+              </Box>
+            )}
           />
         )}
       </Box>
